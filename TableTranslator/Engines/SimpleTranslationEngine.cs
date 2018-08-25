@@ -1,0 +1,143 @@
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Reflection;
+using TableTranslatorEx.Helpers;
+using TableTranslatorEx.Model;
+using TableTranslatorEx.Model.ColumnConfigurations.NonIdentity;
+
+namespace TableTranslatorEx.Engines
+{
+    internal class SimpleTranslationEngine : TranslationEngine
+    {
+        internal override DataTable BuildDataTableStructure(InitializedTranslation translation)
+        {
+            var dataTable = new DataTable(translation.TranslationSettings.TranslationName);
+
+            if (translation.TranslationSettings.IdentityColumnConfiguration != null)
+            {
+                var column = translation.TranslationSettings.IdentityColumnConfiguration.GenerateIdentityColumn();
+                column.ColumnName = BuildFullColumnName(column.ColumnName, translation);
+                dataTable.Columns.Add(column);
+                dataTable.PrimaryKey = new[] { column };
+            }
+            foreach (var colConfig in translation.ColumnConfigurations.OrderBy(x => x.Ordinal))
+            {
+                dataTable.Columns.Add(BuildDataColumn(translation, colConfig));
+            }
+            return dataTable;
+        }
+
+        internal override DataTable FillDataTable<T>(InitializedTranslation translation, IEnumerable<T> data)
+        {
+            var dataTable = translation.Structures[this.Name].Clone();
+            dataTable.TableNewRow += AssignTableNewRowEvent(translation);
+            if (data == null)
+            {
+                return dataTable;
+            }
+
+            foreach (var x in data)
+            {
+                /* ReSharper disable once CompareNonConstrainedGenericWithNull
+                I have Jon Skeet's express permission to ignore this warning :) 
+                (http://stackoverflow.com/questions/5340817/what-should-i-do-about-possible-compare-of-value-type-with-null) */
+                if (x == null)
+                {
+                    continue;
+                }
+
+                var row = dataTable.NewRow();
+                foreach (var colConfig in translation.ColumnConfigurations)
+                {
+                    var d = GetColumnValue(x, colConfig);
+                   // bool b = typeof(int?).IsValueType;
+                    if (colConfig.ColumnDataType.IsValueType)
+                    {
+                        if (d == null)
+                        {
+                            d = DBNull.Value;
+                        }
+                    }
+
+                    row[BuildFullColumnName(colConfig.ColumnName, translation)] = d;
+                }
+                dataTable.Rows.Add(row);
+            }
+
+            return dataTable;
+        }
+
+        internal override IEnumerable<ObjectResult<T>> FillObjectResult<T>(InitializedTranslation translation, DataTable dataTable)
+        {
+            var result = new List<ObjectResult<T>>();
+
+            foreach (var row in dataTable.Rows.Cast<DataRow>())
+            {
+                var objectResult = new T();
+                var bag = new Dictionary<string, object>();
+
+                if (translation.TranslationSettings.IdentityColumnConfiguration != null)
+                {
+                    bag.Add(translation.TranslationSettings.IdentityColumnConfiguration.ColumnName,
+                        GetColumnValueFromRow<T>(row, translation.TranslationSettings.IdentityColumnConfiguration.ColumnName));
+                }
+
+                foreach (var cc in translation.ColumnConfigurations)
+                {
+                    if (cc is MemberColumnConfiguration)
+                    {
+                        PropertyInfo prop = typeof(T).GetProperty((cc as MemberColumnConfiguration).MemberInfo.Name);
+                        if (prop != null && prop.CanWrite)
+                        {
+                            prop.SetValue(objectResult, GetColumnValueFromRow<T>(row, cc.ColumnName));
+                            continue;
+                        }
+
+                        FieldInfo field = typeof(T).GetField((cc as MemberColumnConfiguration).MemberInfo.Name);
+                        if (!field.IsInitOnly)
+                        {
+                            field.SetValue(objectResult, GetColumnValueFromRow<T>(row, cc.ColumnName));
+                            continue;
+                        }
+                    }
+
+                    bag.Add(cc.ColumnName, GetColumnValueFromRow<T>(row, cc.ColumnName));
+                }
+
+                result.Add(new ObjectResult<T>
+                {
+                    Object = objectResult,
+                    DataBag = bag
+                });
+            }
+
+            return result;
+        }
+
+        private static DataTableNewRowEventHandler AssignTableNewRowEvent(TranslationBase translation)
+        {
+            if (translation.TranslationSettings.IdentityColumnConfiguration == null || translation.TranslationSettings.IdentityColumnConfiguration.IsAutoGenerated)
+            {
+                return null;
+            }
+
+            return (sender, args) =>
+            {
+                var table = ((DataTable)sender);
+                var rowCount = table.Rows.Count;
+                var columnName = BuildFullColumnName(translation.TranslationSettings.IdentityColumnConfiguration.ColumnName, translation);
+                var previousValue = rowCount > 0
+                    ? table.Rows[table.Rows.Count - 1][columnName]
+                    : null;
+                args.Row[columnName] = translation.TranslationSettings.IdentityColumnConfiguration.GetNextValue(previousValue);
+            };
+        }
+
+        internal override object GetColumnValue<T>(T data, NonIdentityColumnConfiguration colConfig)
+        {
+            return colConfig.GetValueFromObject(data) ?? colConfig.NullReplacement;
+        }
+    }
+}

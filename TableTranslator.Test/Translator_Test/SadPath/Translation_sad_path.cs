@@ -1,0 +1,109 @@
+using System;
+using NUnit.Framework;
+using TableTranslatorEx.Exceptions;
+using TableTranslatorEx.Model;
+using TableTranslatorEx.Model.Settings;
+using TableTranslatorEx.Test.TestModel;
+using TableTranslatorEx.Test.TestModel.Profiles;
+
+namespace TableTranslatorEx.Test.Translator_Test.SadPath
+{
+    [TestFixture]
+    public class Translation_sad_path : InitializedTranslatorTestBase
+    {
+        [Test]
+        public void Get_all_translations_returns_empty_collection_if_not_initialized()
+        {
+            var translations = Translator.GetAllTranslations();
+            CollectionAssert.IsEmpty(translations);
+        }
+
+        [Test]
+        public void Get_profile_translations_returns_empty_collection_if_profile_not_added()
+        {
+            var translations = Translator.GetProfileTranslations<BasicProfile>();
+            CollectionAssert.IsEmpty(translations);
+        }
+
+        [Test]
+        public void Get_profile_translations_for_type_returns_empty_collection_if_profile_not_added()
+        {
+            var translations = Translator.GetProfileTranslationsForType<BasicProfile, TestPerson>();
+            CollectionAssert.IsEmpty(translations);
+        }
+
+        [Test]
+        public void Get_profile_translations_for_type_returns_empty_collection_if_profile_does_not_have_translation_for_the_type()
+        {
+            Translator.AddProfile<BasicProfile2>();
+            Translator.ApplyUpdates();
+            var translations = Translator.GetProfileTranslationsForType<BasicProfile, TestParent>();
+            CollectionAssert.IsEmpty(translations);
+        }
+
+        [Test]
+        public void Get_specific_profile_translations_returns_null_if_profile_not_added()
+        {
+            var translation = Translator.GetProfileTranslation<BasicProfile, TestParent>("Translation3");
+            Assert.IsNull(translation);
+        }
+
+        [Test]
+        public void Get_specific_profile_translations_returns_null_if_profile_does_not_have_translation_for_the_type()
+        {
+            Translator.AddProfile<BasicProfile2>();
+            Translator.ApplyUpdates();
+            var translation = Translator.GetProfileTranslation<BasicProfile, TestParent>("Translation4");
+            Assert.IsNull(translation);
+        }
+
+        [Test]
+        public void Get_specific_profile_translations_returns_null_if_profile_does_not_have_translation_for_the_type_and_name()
+        {
+            Translator.AddProfile<BasicProfile>();
+            Translator.ApplyUpdates();
+            var translation = Translator.GetProfileTranslation<BasicProfile, TestParent>("WrongName");
+            Assert.IsNull(translation);
+        }
+
+        [Test]
+        public void Explicit_column_name_matching_default_column_name_for_member_config_throws_TableTranslatorConfigurationException()
+        {
+            Translator.AddProfile<DupeExplicitMemberColumnNameProfile>();
+            Assert.Throws<TableTranslatorConfigurationException>(() => Translator.ApplyUpdates());
+        }
+
+        [Test]
+        public void Explicit_column_name_matching_default_column_name_for_non_member_config_throws_TableTranslatorConfigurationException()
+        {
+            Translator.AddProfile<DupeExplicitNonMemberColumnNameProfile>();
+            Assert.Throws<TableTranslatorConfigurationException>(() => Translator.ApplyUpdates());
+        }
+
+        [Test]
+        public void Get_translations_using_null_predicate_throws_ArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => Translator.GetTranslations(null));
+        }
+
+        private class DupeExplicitMemberColumnNameProfile : TranslationProfile
+        {
+            protected override void Configure()
+            {
+                AddTranslation<TestPerson>(new TranslationSettings("Member"))
+                    .AddColumnConfiguration(p => p.PublicProperty)
+                    .AddColumnConfiguration(p => p.InternalProperty, new ColumnConfigurationSettings<string> {ColumnName = "PublicProperty"});
+            }
+        }
+
+        private class DupeExplicitNonMemberColumnNameProfile : TranslationProfile
+        {
+            protected override void Configure()
+            {
+                AddTranslation<TestPerson>(new TranslationSettings("NonMember"))
+                    .AddColumnConfiguration(12)
+                    .AddColumnConfiguration(p => p.InternalProperty, new ColumnConfigurationSettings<string> { ColumnName = "Column0" });
+            }
+        }
+    }
+}
