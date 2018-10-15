@@ -1,0 +1,218 @@
+﻿[Miscellaneous]
+
+        Table Name: Miscellaneous
+        -------------- ROW --------------
+        Name: Tom
+        Test: NULL
+        Birthday: 1980-01-10 0:00:00
+        IsMarried: True
+        IsWarmBlooded: True
+        Street: 123 Main St
+        City: Boston
+        State: MA
+        PostalCode: 02115
+        AddressOneLiner: 123 Main St|Boston|MA|02115
+        SomeSimpleMath: 10
+        ReverseMe!: olleH
+        OxygenAtomicNumber: 8
+        -------------- ROW --------------
+        Name: Sally
+        Test: NULL
+        Birthday: 1965-08-01 0:00:00
+        IsMarried: True
+        IsWarmBlooded: True
+        Street: 987 South Ave
+        City: Los Angeles
+        State: CA
+        PostalCode: 91106
+        AddressOneLiner: 987 South Ave|Los Angeles|CA|91106
+        SomeSimpleMath: 10
+        ReverseMe!: olleH
+        OxygenAtomicNumber: 8
+        -------------- ROW --------------
+        Name: Jim
+        Test: NULL
+        Birthday: 1987-12-14 0:00:00
+        IsMarried: False
+        IsWarmBlooded: True
+        Street: 456 2nd St
+        City: Cleveland
+        State: OH
+        PostalCode: 44023
+        AddressOneLiner: 456 2nd St|Cleveland|OH|44023
+        SomeSimpleMath: 10
+        ReverseMe!: olleH
+        OxygenAtomicNumber: 8
+
+
+[AllMembers]
+
+        Table Name: AllMembers
+        -------------- ROW --------------
+        Name: Tom
+        Birthday: 1980-01-10 0:00:00
+        IsMarried: True
+        Test: NULL
+        Testbool: NULL
+        IsWarmBlooded: True
+        -------------- ROW --------------
+        Name: Sally
+        Birthday: 1965-08-01 0:00:00
+        IsMarried: True
+        Test: NULL
+        Testbool: NULL
+        IsWarmBlooded: True
+        -------------- ROW --------------
+        Name: Jim
+        Birthday: 1987-12-14 0:00:00
+        IsMarried: False
+        Test: NULL
+        Testbool: NULL
+        IsWarmBlooded: True
+
+
+[AllMembersWithPredicate]
+
+        Table Name: AllMembersWithPredicate
+        -------------- ROW --------------
+        Birthday: 1980-01-10 0:00:00
+        IsMarried: True
+        IsWarmBlooded: True
+        -------------- ROW --------------
+        Birthday: 1965-08-01 0:00:00
+        IsMarried: True
+        IsWarmBlooded: True
+        -------------- ROW --------------
+        Birthday: 1987-12-14 0:00:00
+        IsMarried: False
+        IsWarmBlooded: True
+
+
+[AllMembersWithOrderer]
+
+        Table Name: AllMembersWithOrderer
+        -------------- ROW --------------
+        IsWarmBlooded: True
+        IsMarried: True
+        Birthday: 1980-01-10 0:00:00
+        Testbool: NULL
+        Name: Tom
+        Test: NULL
+        -------------- ROW --------------
+        IsWarmBlooded: True
+        IsMarried: True
+        Birthday: 1965-08-01 0:00:00
+        Testbool: NULL
+        Name: Sally
+        Test: NULL
+        -------------- ROW --------------
+        IsWarmBlooded: True
+        IsMarried: False
+        Birthday: 1987-12-14 0:00:00
+        Testbool: NULL
+        Name: Jim
+        Test: NULL
+
+
+[AllMembersWithBindingFlags]
+
+        Table Name: AllMembersWithBindingFlags
+        -------------- ROW --------------
+        Name: Tom
+        Birthday: 1980-01-10 0:00:00
+        IsMarried: True
+        Test: NULL
+        Testbool: NULL
+        -------------- ROW --------------
+        Name: Sally
+        Birthday: 1965-08-01 0:00:00
+        IsMarried: True
+        Test: NULL
+        Testbool: NULL
+        -------------- ROW --------------
+        Name: Jim
+        Birthday: 1987-12-14 0:00:00
+        IsMarried: False
+        Test: NULL
+        Testbool: NULL
+
+
+[VariousOptionalSettings]
+
+        Table Name: VariousOptionalSettings
+        -------------- ROW --------------
+        PREFIX_MyGuidId_SUFFIX: 20f41d6d-d288-4622-a812-e45e95a5a82e
+        PREFIX_DifferentName_SUFFIX: Tom
+        -------------- ROW --------------
+        PREFIX_MyGuidId_SUFFIX: 42f66fa3-71a0-47ed-991e-8201e7fddf29
+        PREFIX_DifferentName_SUFFIX: Sally
+        -------------- ROW --------------
+        PREFIX_MyGuidId_SUFFIX: 17df21fd-2db5-4a41-9982-11b7faa6f102
+        PREFIX_DifferentName_SUFFIX: Jim
+
+
+[ForAStruct]
+
+        Table Name: ForAStruct
+        -------------- ROW --------------
+        X: 1
+        X Times 10: 10
+        X Days From Now: 2018-10-16 17:47:23
+        -------------- ROW --------------
+        X: 2
+        X Times 10: 20
+        X Days From Now: 2018-10-17 17:47:23
+        -------------- ROW --------------
+        X: 3
+        X Times 10: 30
+        X Days From Now: 2018-10-18 17:47:23
+
+
+[Miscellaneous (as a DbParameter)]
+
+        Database Object Name: myDatabaseObjName
+        Parameter Name: myParameterName
+        -------------- ROW --------------
+        Name: Tom
+        Test: NULL
+        Birthday: 1980-01-10 0:00:00
+        IsMarried: True
+        IsWarmBlooded: True
+        Street: 123 Main St
+        City: Boston
+        State: MA
+        PostalCode: 02115
+        AddressOneLiner: 123 Main St|Boston|MA|02115
+        SomeSimpleMath: 10
+        ReverseMe!: olleH
+        OxygenAtomicNumber: 8
+        -------------- ROW --------------
+        Name: Sally
+        Test: NULL
+        Birthday: 1965-08-01 0:00:00
+        IsMarried: True
+        IsWarmBlooded: True
+        Street: 987 South Ave
+        City: Los Angeles
+        State: CA
+        PostalCode: 91106
+        AddressOneLiner: 987 South Ave|Los Angeles|CA|91106
+        SomeSimpleMath: 10
+        ReverseMe!: olleH
+        OxygenAtomicNumber: 8
+        -------------- ROW --------------
+        Name: Jim
+        Test: NULL
+        Birthday: 1987-12-14 0:00:00
+        IsMarried: False
+        IsWarmBlooded: True
+        Street: 456 2nd St
+        City: Cleveland
+        State: OH
+        PostalCode: 44023
+        AddressOneLiner: 456 2nd St|Cleveland|OH|44023
+        SomeSimpleMath: 10
+        ReverseMe!: olleH
+        OxygenAtomicNumber: 8
+
+

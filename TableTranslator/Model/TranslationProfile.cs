@@ -54,12 +54,13 @@ namespace TableTranslatorEx.Model
         }
 
         /// <summary>
+        /// 增加一个TTranslationType类型的转换配置
         /// Adds a translation for type TTranslationType to the translation profile
         /// </summary>
         /// <typeparam name="TTranslationType">Type that the translation is for</typeparam>
         /// <param name="translationSettings">Additional configuration settings for the translation</param>
         /// <returns>Translation expression used to add column configurations to a translation</returns>
-        public TranslationExpression<TTranslationType> AddTranslation<TTranslationType>(TranslationSettings translationSettings) 
+        public TranslationExpression<TTranslationType> AddTranslation<TTranslationType>(TranslationSettings translationSettings)
             where TTranslationType : new()
         {
             try

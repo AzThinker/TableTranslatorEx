@@ -12,6 +12,9 @@ namespace TableTranslatorEx.Examples.Model
         public int? Test { get; set; }
 
         public bool? Testbool { get; set; }
+        /// <summary>
+        /// 静态成员
+        /// </summary>
         public static bool IsWarmBlooded { get; private set; }
 
         public Person()
